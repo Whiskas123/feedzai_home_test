@@ -5,8 +5,19 @@ import fetcher from "../libs/fetcher";
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+interface FeatureProperties {
+  [key: string]: any; // Use 'any' or a more specific type if possible for the values
+  country: string;
+}
 
-// @ts-ignore
+interface Feature {
+  properties: FeatureProperties;
+}
+
+interface RankingEntry {
+  country: string;
+  refugees: number;
+}
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2xhdWRpb2xlbW9zIiwiYSI6ImNsMDV4NXBxajBzMWkzYm9ndXhzbTk5ZHkifQ.85n9mjZbTDUpyQZrrJTBwA";
@@ -44,8 +55,9 @@ const Map = () => {
 
   const [normalizedDate, setNormalizedDate] = React.useState(0);
   const [barWidth, setBarWidth] = React.useState("0%");
-  const [hoveredFeature, setHoveredFeature] = React.useState(null);
-  const [ranking, setRanking] = React.useState([]);
+  const [hoveredFeature, setHoveredFeature] =
+    React.useState<mapboxgl.MapboxGeoJSONFeature | null>(null);
+  const [ranking, setRanking] = React.useState<RankingEntry[]>([]);
   const [totalRefugees, setTotalRefugees] = React.useState(0);
   const formatDate = (value: number) => {
     const startYear = 1951;
@@ -60,18 +72,21 @@ const Map = () => {
     if (!data || !data.features) return;
     console.log(year);
 
-    const total = data.features.reduce((sum, feature) => {
+    const total = data.features.reduce((sum: number, feature: Feature) => {
       const refugees = feature.properties[year.toString()] || 0;
       return sum + refugees;
     }, 0);
     setTotalRefugees(total);
 
     const rankingData = data.features
-      .map((feature) => ({
+      .map((feature: Feature) => ({
         country: feature.properties.country,
         refugees: feature.properties[year.toString()],
       }))
-      .sort((a, b) => b.refugees - a.refugees)
+      .sort(
+        (a: { refugees: number }, b: { refugees: number }) =>
+          b.refugees - a.refugees
+      )
       .slice(0, 10); // Get top 10 countries
 
     setRanking(rankingData);
@@ -183,11 +198,24 @@ const Map = () => {
       });
 
       map.current.on("mousemove", "refugees", (e) => {
-        // Change the cursor style as a UI indicator.
-        map.current.getCanvas().style.cursor = "pointer";
-        setHoveredFeature(e.features[0]);
+        if (
+          !e.features ||
+          e.features.length === 0 ||
+          !e.features[0].geometry ||
+          !e.features[0].properties ||
+          e.features[0].geometry.type !== "Point"
+        )
+          return;
 
-        const coordinates = e.features[0].geometry.coordinates.slice();
+        if (map.current && e.features && e.features.length > 0) {
+          map.current.getCanvas().style.cursor = "pointer";
+          setHoveredFeature(e.features[0]);
+        }
+
+        const coordinates: [number, number] = [
+          e.features[0].geometry.coordinates[0],
+          e.features[0].geometry.coordinates[1],
+        ];
         const countryName = e.features[0].properties.country;
         const year = formatDate(normalizedDateRef.current).toString(); // Replace 'name' with the actual property name for the country in your data
         const refugeesCount = e.features[0].properties[year];
@@ -196,22 +224,26 @@ const Map = () => {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
 
-        popup
-          .setLngLat(coordinates)
-          .setHTML(
-            `<strong>${countryName}</strong><br/>Refugees in ${year}: ${
-              refugeesCount >= 1e6
-                ? (refugeesCount / 1e6).toFixed(2) + "M"
-                : refugeesCount >= 1e4
-                ? refugeesCount / 1e3 + "k"
-                : refugeesCount
-            }`
-          )
-          .addTo(map.current);
+        if (map.current) {
+          popup
+            .setLngLat(coordinates)
+            .setHTML(
+              `<strong>${countryName}</strong><br/>Refugees in ${year}: ${
+                refugeesCount >= 1e6
+                  ? (refugeesCount / 1e6).toFixed(2) + "M"
+                  : refugeesCount >= 1e4
+                  ? refugeesCount / 1e3 + "k"
+                  : refugeesCount
+              }`
+            )
+            .addTo(map.current);
+        }
       });
 
-      map.current.on("mouseleave", "refugees", () => {
-        map.current.getCanvas().style.cursor = "";
+      map.current?.on("mouseleave", "refugees", () => {
+        if (map.current) {
+          map.current.getCanvas().style.cursor = "";
+        }
         popup.remove();
         setHoveredFeature(null);
       });
@@ -268,7 +300,6 @@ const Map = () => {
             The new millenium started with a considerable decrease in the number
             of refugees, from the peak of 14M to around 10M.
           </div>
-
 
           <div className="text-box">
             The Syrian Civil War, the Russian Invasion of Ukraine and the
