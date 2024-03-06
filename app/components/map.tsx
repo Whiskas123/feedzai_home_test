@@ -118,8 +118,8 @@ const Map = () => {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/light-v10?optimize=true",
-        center: [-30, 40],
-        zoom: 1.7,
+        center: [4, 40],
+        zoom: 1.65,
         interactive: false,
       });
 
