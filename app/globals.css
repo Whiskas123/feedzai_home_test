@@ -3,31 +3,225 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 214, 219, 220;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+
+.whole-container {
+  position:relative;
+
+}
+.graph-container{
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  z-index: 1;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.text-boxes-container {
+position: absolute;
+top: 0;
+padding-top: 0vh;
+width: 100%;
+pointer-events: none;
+
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.title {
+  font-family: Helvetica;
+  font-weight: bold;
+  width: 350px;
+  margin: 27vh 50px 0 50px;
+  font-size: 10rem;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ending {
+  font-family: Helvetica;
+  font-weight: bold;
+  width: 50vh;
+  margin: 50vh 50px 0 50px;
+  font-size: 7rem;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 2;
+  pointer-events: none;
+
+}
+
+.text-box {
+  padding: 30px;
+  background-color: #faeee7;
+  width: 350px;
+  margin: 50vh 50px 0 50px;
+  font-size: 1.6rem;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: relative;
+  z-index: 10;
+}
+
+.tooltip-text{
+  font-weight: 300;
+}
+
+.chart-title-container{
+  text-align: center;
+  position: fixed;
+  top: 5vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  background-color: #efe7da;
+  padding: 10px 15px 10px 15px;
+  border-radius: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.legend-item:last-child {
+  margin-right: 0;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.legend-text {
+  font-size: 14px;
+}
+
+.map-container {
+  height: 100vh;
+  width: 100vw;
+
+}
+
+.whole-container {
+  position: relative;
+}
+
+
+
+
+
+
+[type='checkbox'] {
+  width: 2rem;
+  height: 2rem;
+  color: dodgerblue;
+  vertical-align: middle;
+  appearance: none;
+  background: none;
+  border: 0;
+  outline: 0;
+  flex-grow: 0;
+  border-radius: 50%;
+  background-color: #ffffff;
+  transition: background 300ms;
+  cursor: pointer;
+}
+
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fff;
+  background-color: #fff;
+  padding: 10px 0;
+  width: 100%;
+  text-align: left;
+  z-index: 10;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: width 0.25s ease-out; /* Smooth transition for the bar width */
+  padding-left: 20px;
+  border-bottom: #0023e8 2px solid;
+  border-top: #0023e8 2px solid;
+  font-size:x-large;
+  
+}
+
+.progress-fill {
+  background: #0023e8;
+  color: #fff;
+  padding: 10px 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  transition: width 0.25s ease-out; /* Smooth transition for the bar width */
+  
+}
+
+.progress-fill-text {
+  padding-left: 20px;
+  font-size: x-large;
+}
+
+.active {
+  pointer-events: none;
+  
+}
+
+.legend-container {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: fixed;
+  right:5px;
+  top:50px;
+  z-index: 10;
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.legend-ranking {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legend-ranking li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.legend-country {
+  flex: 1;
+  margin-right: 5px;
+}
+
+.legend-refugees {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.legend-total{
+  font-weight: bold;
 }
