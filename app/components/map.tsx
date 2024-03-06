@@ -6,7 +6,7 @@ import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 interface FeatureProperties {
-  [key: string]: any; // Use 'any' or a more specific type if possible for the values
+  [key: string]: any;
   country: string;
 }
 
@@ -67,7 +67,6 @@ const Map = () => {
     return year.toString();
   };
 
-  // Function to update the ranking based on the normalizedDate
   const updateRanking = (year: string) => {
     if (!data || !data.features) return;
     console.log(year);
@@ -87,8 +86,7 @@ const Map = () => {
         (a: { refugees: number }, b: { refugees: number }) =>
           b.refugees - a.refugees
       )
-      .slice(0, 10); // Get top 10 countries
-
+      .slice(0, 10);
     setRanking(rankingData);
   };
 
@@ -102,7 +100,6 @@ const Map = () => {
   const normalizedDateRef = useRef(normalizedDate);
 
   useEffect(() => {
-    // Update the ref each time the state changes
     normalizedDateRef.current = normalizedDate;
     const year = formatDate(normalizedDate);
     updateRanking(year);
@@ -148,7 +145,7 @@ const Map = () => {
           end: "bottom bottom",
           pin: progressBar.current,
           pinSpacing: false,
-          toggleClass: "active", // Ensure this is the correct reference to the element you want to pin
+          toggleClass: "active",
         });
 
         ScrollTrigger.create({
@@ -168,7 +165,6 @@ const Map = () => {
             setBarWidth(`${scrollProgress * 100}%`);
             if (map.current) {
               const currentYear = parseInt(year);
-              // Set the circle paint properties with the transition
               map.current.setPaintProperty(
                 "refugees",
                 "circle-radius",
@@ -217,7 +213,7 @@ const Map = () => {
           e.features[0].geometry.coordinates[1],
         ];
         const countryName = e.features[0].properties.country;
-        const year = formatDate(normalizedDateRef.current).toString(); // Replace 'name' with the actual property name for the country in your data
+        const year = formatDate(normalizedDateRef.current).toString();
         const refugeesCount = e.features[0].properties[year];
 
         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {

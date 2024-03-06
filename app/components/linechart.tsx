@@ -28,7 +28,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
-// Define the type for your data points
 type DataPoint = { x: string; y: number };
 type ContinentData = { [key: string]: DataPoint[] };
 type YearlyData = { [year: string]: number };
@@ -45,12 +44,12 @@ const LineChart = () => {
   const [state, setState] = useState<number>(0);
   const titleRef = React.useRef(null);
   const continentColors = {
-    Europe: "#F7E733", // less pastel green
-    Africa: "#f07c42", // less pastel orange
-    Asia: "#41E2BA", // less pastel yellow
-    "North America": "#155b5e", // less pastel light green
-    "South America": "#6f9a0a", // less pastel dark green
-    Oceania: "#2B2D42", // less pastel red
+    Europe: "#F7E733",
+    Africa: "#f07c42",
+    Asia: "#41E2BA",
+    "North America": "#155b5e",
+    "South America": "#6f9a0a",
+    Oceania: "#2B2D42",
   };
   const specificYear = "1966";
   const dataPointIndex = totalData.findIndex((d) => d.x === specificYear);
@@ -71,15 +70,15 @@ const LineChart = () => {
 
   const xScale = React.useMemo(() => {
     return scaleBand({
-      range: [0, width], // You need to define the width of your chart
+      range: [0, width],
       domain: totalData.map((d) => d.x),
-      padding: 0.1, // Optional, for spacing between bands
+      padding: 0.1,
     });
-  }, [totalData, width]); // Include width in the dependency array if it's dynamic
+  }, [totalData, width]);
 
   const yScale = React.useMemo(() => {
     return scaleLinear({
-      range: [height, 0], // Typically inverted for y-axis in charts
+      range: [height, 0],
       domain: state !== 2 ? yExtent : yExtentCountry,
     });
   }, [state, yExtent, yExtentCountry, height]);
@@ -338,11 +337,7 @@ const LineChart = () => {
                     dy={-10}
                   >
                     <Connector stroke="black" />
-                    <CircleSubject
-                      stroke="black"
-                      // Adjust the radius as needed
-                      r={4}
-                    />
+                    <CircleSubject stroke="black" r={4} />
                     <Label
                       title="1966"
                       horizontalAnchor="middle"
